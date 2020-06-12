@@ -1,0 +1,64 @@
+### 解题思路
+使用信号量实现异步输出
+s为0时，打印zero；不为0则循环等待；
+s不为0时，判断当前打印数字的奇偶，s%4==1为奇数，则打印odd，否则循环等待；
+                                s%4==3为偶数，则打印even，否则循环等待。
+
+### 代码
+
+```java
+class ZeroEvenOdd {
+    private int n;
+    private int s=0;//s为信号量
+    Object lock=new Object();//创建Object对象
+
+    
+    public ZeroEvenOdd(int n) {
+        this.n = n;
+    }
+
+    // printNumber.accept(x) outputs "x", where x is an integer.
+    public void zero(IntConsumer printNumber) throws InterruptedException {
+
+        for(int i=0;i<n;i++){
+            synchronized(lock){//使用关键字synchronized来实现同步访问
+                while(s%2!=0){
+                    lock.wait();
+                }
+            
+                printNumber.accept(0);
+                s++;
+                lock.notifyAll();
+            }
+        }
+        
+    }
+
+    public void even(IntConsumer printNumber) throws InterruptedException {
+        for(int j=2;j<=n;j+=2){
+            synchronized(lock){
+                while(s%2==0||s%4!=3){
+                    lock.wait();
+                }
+            
+                printNumber.accept(j);
+                s++;
+                lock.notifyAll();
+            }
+        }
+    }
+
+    public void odd(IntConsumer printNumber) throws InterruptedException {
+        for(int k=1;k<=n;k+=2){
+            synchronized(lock){
+                while(s%2==0||s%4!=1){
+                    lock.wait();
+                }
+            
+                printNumber.accept(k);
+                s++;
+                lock.notifyAll();
+            }
+        }
+    }
+}
