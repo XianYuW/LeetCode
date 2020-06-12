@@ -1,0 +1,52 @@
+### 解题思路
+设置信号量，利用锁，成员变量来控制顺序
+First打印one，并设置信号量S=1，并唤醒其他所有进程；
+Two检查s！=1则等待；first执行完成后，打印two，并设置信号量S=2；
+Three检查s！=2则等待，只有在two执行完成后才打印three，并设置信号量s=3；
+
+### 代码
+
+```java
+class Foo {
+
+    int s=0;//设置信号量
+    private Object lock=new Object();//创建Object对象
+    public Foo() {
+        
+    }
+
+    public void first(Runnable printFirst) throws InterruptedException {
+        synchronized (lock){//使用关键字synchronized来实现同步访问
+            // printFirst.run() outputs "first". Do not change or remove this line.
+            printFirst.run();
+            s=1;
+            lock.notifyAll();//通知所有等待该对象的线程
+        }
+        
+    }
+
+    public void second(Runnable printSecond) throws InterruptedException {
+        synchronized(lock){
+            while(s!=1){//信号量s！=1，则轮询，并wait
+                lock.wait();
+            }
+            // printSecond.run() outputs "second". Do not change or remove this line.
+            printSecond.run();
+            s=2;//更改信号量s=2
+            lock.notifyAll();//通知其他所有线程
+        }
+        
+    }
+
+    public void third(Runnable printThird) throws InterruptedException {
+        synchronized(lock){
+            while(s!=2){//信号量s！=2，则轮询，并wait
+                lock.wait();
+            }
+            // printThird.run() outputs "third". Do not change or remove this line.
+            printThird.run();
+        }
+        
+    }
+}
+```
