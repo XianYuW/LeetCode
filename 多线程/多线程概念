@@ -1,0 +1,51 @@
+Object类：    
+    Object lock=new Object();//创建Object对象
+    设置信号量
+    
+    synchronized（lock）{//synchronized关键字
+                         //JVM通过在执行的时候抛出IllegalMonitorStateException的异常，来确保wait, notify时，获得了对象的锁.
+                           如果未加锁，则会报错
+        while(信号量判定条件){
+            lock.wait();//循环等待
+                        //wait的作用是使当前线程阻塞，和sleep类似，都是让线程睡眠。但是wait是可以手动唤醒线程的，而sleep则只能等待线程苏醒。
+        }
+        print；
+        更改信号量的值；
+        lock.notifyAll();//唤醒其他所有等待的线程
+        lock.notify();//随机唤醒一个等待线程
+    }
+    
+    
+    
+
+synchronized与lock的区别：
+类别	                            synchronized	                                            Lock
+
+存在层次	            Java的关键字，在jvm层面上	                                          是一个类
+
+锁的释放	          1、以获取锁的线程执行完同步代码，释放锁                 2、线程执行发生异常，jvm会让线程释放锁	
+                                                                          在finally中必须释放锁，不然容易造成线程死锁
+                                                                          
+锁的获取	          假设A线程获得锁，B线程等待。                                   分情况而定，Lock有多个锁获取的方式
+                    如果A线程阻塞，B线程会一直等待	                           大致就是可以尝试获得锁，线程可以不用一直等待
+          
+锁状态	                    无法判断	                                                    可以判断
+
+锁类型	              可重入 不可中断 非公平	                                    可重入 可判断 可公平（两者皆可）
+
+性能	                            少量同步	                                              大量同步
+
+
+
+lock类：
+
+lock()；//获取锁，如果锁被暂用则一直等待
+
+unlock()；//释放锁
+
+tryLock():；//注意返回类型是boolean，如果获取锁的时候锁被占用就返回false，否则返回true
+
+tryLock(long time, TimeUnit unit)；//比起tryLock()就是给了一个时间期限，保证等待参数时间
+
+lockInterruptibly()；//用该锁的获得方式，如果线程在获取锁的阶段进入了等待，那么可以中断此线程，先去做别的事
+
