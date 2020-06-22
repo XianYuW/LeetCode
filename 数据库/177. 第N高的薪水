@@ -27,7 +27,7 @@ BEGIN
   RETURN (
       # Write your MySQL query statement below.
       
-      select distinct Salary  //distinct用于清除重复数据 
+      select distinct Salary  //distinct用于清除重复数据   关键词 DISTINCT 用于返回唯一不同的值。
       from Employee
       order by Salary desc limit N,1
       
