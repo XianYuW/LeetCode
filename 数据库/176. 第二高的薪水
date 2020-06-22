@@ -31,8 +31,10 @@ as SecondHighestSalary
 
 limit 的用法为：  select * 
                   from tableName 
-                  limit i,n        //i：为查询结果的索引值(默认从0开始)，当i=0时可省略i
+                  limit i,n        //i：为查询结果的索引值(默认从0开始)，当i=0时可省略i，从i+1开始取
                                    //n：为查询结果返回的数量。i与n之间使用英文逗号","隔开
+           例：select * from tablename limit 2,4
+               即取出第3条至第6条，4条记录
 
 
 2.解法二：去掉最高薪水后，再取最高薪水；
