@@ -1,0 +1,42 @@
+编写一个 SQL 查询，获取 Employee 表中第二高的薪水（Salary） 。
+
++----+--------+
+| Id | Salary |
++----+--------+
+| 1  | 100    |
+| 2  | 200    |
+| 3  | 300    |
++----+--------+
+例如上述 Employee 表，SQL查询应该返回 200 作为第二高的薪水。如果不存在第二高的薪水，那么查询应返回 null。
+
++---------------------+
+| SecondHighestSalary |
++---------------------+
+| 200                 |
++---------------------+
+
+来源：力扣（LeetCode）
+链接：https://leetcode-cn.com/problems/second-highest-salary
+
+
+题解：
+
+1.解法一：利用 limit 进行限制 此方法可适用于求第N高的薪水，且数据越复杂，速度优势越明显
+
+select
+(select distinct salary from employee 
+order by salary desc limit 1,1) 
+as SecondHighestSalary
+附加一个嵌套查询，内层查询结果为为空时，将 Null 附给 SecondHighestSalary 使得其返回值为 Null；
+
+limit 的用法为：  select * 
+                  from tableName 
+                  limit i,n        //i：为查询结果的索引值(默认从0开始)，当i=0时可省略i
+                                   //n：为查询结果返回的数量。i与n之间使用英文逗号","隔开
+
+
+2.解法二：去掉最高薪水后，再取最高薪水；
+
+select distinct max(salary) as SecondHighestSalary 
+from employee 
+where salary not in(select max(salary) from employee)
