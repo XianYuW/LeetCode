@@ -30,3 +30,13 @@ Department 表包含公司所有部门的信息。
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 
 题解：
+
+
+select b.Name as Department,a.Name as Employee , a.Salary as Salary
+from Employee a join Department b
+on a.DepartmentId = b.Id
+where(a.DepartmentId,Salary) in 
+    (select DepartmentId,max(Salary)
+    from Employee
+    group by DepartmentId
+    )
