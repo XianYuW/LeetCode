@@ -40,3 +40,21 @@ where(a.DepartmentId,Salary) in
     from Employee
     group by DepartmentId
     )
+
+
+
+题解二：通过185题，先建立一个子查询，查询出部门的最高工资，然后使用外层查询
+
+
+select d.Name as Department,c.Name as Employee,c.Salary as Salary
+from Employee as c left join Department as d
+on c.DepartmentId=d.Id
+where c.Id in
+(select a.Id
+from Employee a left join Employee  b
+on a.DepartmentId=b.DepartmentId and a.Salary<b.Salary
+group by a.Id
+having count(distinct b.Salary)<=0
+)
+and c.DepartmentId in (select Id from Department)                                             //注：题目会给出一种Department表为空的数据，此时d.name为null，但是会有数据产生
+                                                                                                而题目的这种情况应该是没有数据的，因此加了个判定条件
