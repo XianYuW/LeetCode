@@ -42,11 +42,11 @@ select d.Name as Department ,c.Name as Employee ,c.Salary as Salary
 from Employee c left join Department d 
 on c.DepartmentId=d.Id
 where c.Id in
-(select a.Id
-from Employee a left join Employee b
-on a.DepartmentId = b.DepartmentId and a.Salary < b.Salary
-group by a.Id
-having count(distinct b.Salary)<=2
+(   select a.Id                                                                       //通过子查询查找薪水前三的Id
+    from Employee a left join Employee b                                              //自联结查找出同一部门中薪水大于我的人的数目
+    on a.DepartmentId = b.DepartmentId and a.Salary < b.Salary
+    group by a.Id
+    having count(distinct b.Salary)<=2                                                //用having筛选出薪水比我高的人数不超过两个
 )
 and c.DepartmentId in (select Id from Department)
 order by d.Id asc,c.Salary  desc
